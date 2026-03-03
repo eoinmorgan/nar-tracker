@@ -1,0 +1,63 @@
+name: NARTracker
+options:
+  bundleIdPrefix: com.nartracker
+  deploymentTarget:
+    iOS: "17.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    PRODUCT_BUNDLE_IDENTIFIER: com.nartracker.NARTracker
+    # Set your Apple Developer Team ID here, or configure it in Xcode after generating.
+    # DEVELOPMENT_TEAM: XXXXXXXXXX
+
+packages:
+  AppAuth:
+    url: https://github.com/openid/AppAuth-iOS
+    from: 1.7.5
+
+schemes:
+  NARTracker:
+    build:
+      targets:
+        NARTracker: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+targets:
+  NARTracker:
+    type: application
+    platform: iOS
+    sources:
+      - path: NARTracker
+    dependencies:
+      - package: AppAuth
+        product: AppAuth
+    info:
+      path: NARTracker/Info.plist
+      properties:
+        CFBundleDisplayName: NAR Tracker
+        UILaunchScreen: {}
+        # Location permission prompt shown to the user
+        NSLocationWhenInUseUsageDescription: >
+          Your location is recorded with each symptom entry to correlate
+          symptoms with weather and environment.
+        # Custom URL scheme for Cognito OAuth callback
+        CFBundleURLTypes:
+          - CFBundleURLName: com.nartracker.NARTracker
+            CFBundleURLSchemes:
+              - nartracker
+        # Allow Open-Meteo (HTTP API — only needed if you target iOS <16 ATS)
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+          NSExceptionDomains:
+            api.open-meteo.com:
+              NSExceptionAllowsInsecureHTTPLoads: false

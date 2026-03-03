@@ -1,0 +1,6 @@
+*node_modules*
+# Exclude CDK synthesis output
+*cdk.out/
+
+# But DO NOT exclude cdk.context.json
+!*cdk.context.json
