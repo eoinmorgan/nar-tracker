@@ -7,11 +7,12 @@ struct FormView: View {
     var body: some View {
         NavigationStack {
             Form {
+                let scale = ["😫","😟","😐","🙂","😄"]
                 Section("Symptoms") {
-                    StarRatingView(label: "Congestion", rating: $vm.congestion)
-                    StarRatingView(label: "Headaches",  rating: $vm.headaches)
-                    StarRatingView(label: "Fatigue",    rating: $vm.fatigue)
-                    StarRatingView(label: "Mood",       rating: $vm.mood)
+                    EmojiRatingView(label: "Congestion", emojis: scale, rating: $vm.congestion)
+                    EmojiRatingView(label: "Headaches",  emojis: scale, rating: $vm.headaches)
+                    EmojiRatingView(label: "Fatigue",    emojis: scale, rating: $vm.fatigue)
+                    EmojiRatingView(label: "Depression", emojis: scale, rating: $vm.mood)
                 }
 
                 Section("Context") {
