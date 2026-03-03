@@ -1,0 +1,19 @@
+{
+  "name": "nar-tracker-cdk",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "aws-cdk": "^2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2",
+    "constructs": "^10"
+  }
+}
