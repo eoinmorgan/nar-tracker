@@ -20,7 +20,8 @@ def lambda_handler(event, context):
         return {"statusCode": 400, "body": f"Bad request: {e}"}
 
     required = ["submission_time", "latitude", "longitude",
-                "humidity_pct", "congestion", "headaches", "fatigue", "mood"]
+                "humidity_pct", "pm25", "pm10",
+                "congestion", "headaches", "fatigue", "mood"]
     missing = [k for k in required if k not in body]
     if missing:
         return {"statusCode": 400, "body": f"Missing fields: {missing}"}
@@ -31,6 +32,8 @@ def lambda_handler(event, context):
         "latitude":          Decimal(str(body["latitude"])),
         "longitude":         Decimal(str(body["longitude"])),
         "humidity_pct":      int(body["humidity_pct"]),
+        "pm25":              Decimal(str(body["pm25"])),
+        "pm10":              Decimal(str(body["pm10"])),
         "congestion":        int(body["congestion"]),
         "headaches":         int(body["headaches"]),
         "fatigue":           int(body["fatigue"]),

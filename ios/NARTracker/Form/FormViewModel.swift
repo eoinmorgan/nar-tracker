@@ -11,7 +11,9 @@ class FormViewModel: NSObject, ObservableObject {
 
     // State
     @Published var locationStatus: LocationStatus = .loading
-    @Published var humidity: Int?
+    @Published var humidity:  LoadState<Int>    = .loading
+    @Published var pm25:      LoadState<Double> = .loading
+    @Published var pm10:      LoadState<Double> = .loading
     @Published var isSubmitting = false
     @Published var submitResult: SubmitResult?
 
@@ -33,10 +35,29 @@ class FormViewModel: NSObject, ObservableObject {
             let loc = try await requestLocation()
             location       = loc
             locationStatus = .ready
-            humidity = try? await WeatherClient.fetchHumidity(
-                latitude:  loc.coordinate.latitude,
-                longitude: loc.coordinate.longitude
-            )
+            humidity = .loading
+            pm25     = .loading
+            pm10     = .loading
+
+            Task {
+                humidity = (try? await WeatherClient.fetchHumidity(
+                    latitude:  loc.coordinate.latitude,
+                    longitude: loc.coordinate.longitude
+                )).map { .loaded($0) } ?? .unavailable
+            }
+
+            Task {
+                if let aq = try? await WeatherClient.fetchAirQuality(
+                    latitude:  loc.coordinate.latitude,
+                    longitude: loc.coordinate.longitude
+                ) {
+                    pm25 = .loaded(aq.pm25)
+                    pm10 = .loaded(aq.pm10)
+                } else {
+                    pm25 = .unavailable
+                    pm10 = .unavailable
+                }
+            }
         } catch {
             locationStatus = .failed
         }
@@ -55,7 +76,9 @@ class FormViewModel: NSObject, ObservableObject {
             submission_time: ISO8601DateFormatter().string(from: Date()),
             latitude:          loc.coordinate.latitude,
             longitude:         loc.coordinate.longitude,
-            humidity_pct:      humidity ?? 0,
+            humidity_pct:      humidity.value ?? 0,
+            pm25:              pm25.value ?? 0,
+            pm10:              pm10.value ?? 0,
             congestion:        congestion,
             headaches:         headaches,
             fatigue:           fatigue,
@@ -88,6 +111,17 @@ class FormViewModel: NSObject, ObservableObject {
     }
 
     enum LocationStatus { case loading, ready, failed }
+
+    enum LoadState<T> {
+        case loading
+        case loaded(T)
+        case unavailable
+
+        var value: T? {
+            if case .loaded(let v) = self { return v }
+            return nil
+        }
+    }
 
     enum SubmitResult: Equatable {
         case success

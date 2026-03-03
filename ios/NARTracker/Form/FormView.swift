@@ -20,11 +20,29 @@ struct FormView: View {
                         Label("Getting location…", systemImage: "location")
                             .foregroundStyle(.secondary)
                     case .ready:
-                        if let h = vm.humidity {
+                        switch vm.humidity {
+                        case .loading:
+                            Label { Text("Humidity…").foregroundStyle(.secondary) } icon: { ProgressView() }
+                        case .loaded(let h):
                             Label("Humidity: \(h)%", systemImage: "humidity")
-                        } else {
-                            Label("Humidity unavailable", systemImage: "humidity")
-                                .foregroundStyle(.secondary)
+                        case .unavailable:
+                            Label("Humidity unavailable", systemImage: "humidity").foregroundStyle(.secondary)
+                        }
+                        switch vm.pm25 {
+                        case .loading:
+                            Label { Text("PM2.5…").foregroundStyle(.secondary) } icon: { ProgressView() }
+                        case .loaded(let v):
+                            Label("PM2.5: \(Int(v.rounded())) µg/m³", systemImage: "aqi.low")
+                        case .unavailable:
+                            Label("PM2.5 unavailable", systemImage: "aqi.low").foregroundStyle(.secondary)
+                        }
+                        switch vm.pm10 {
+                        case .loading:
+                            Label { Text("PM10…").foregroundStyle(.secondary) } icon: { ProgressView() }
+                        case .loaded(let v):
+                            Label("PM10: \(Int(v.rounded())) µg/m³", systemImage: "aqi.medium")
+                        case .unavailable:
+                            Label("PM10 unavailable", systemImage: "aqi.medium").foregroundStyle(.secondary)
                         }
                     case .failed:
                         Label("Location denied — grant access in Settings", systemImage: "location.slash")

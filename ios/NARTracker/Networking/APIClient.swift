@@ -25,6 +25,8 @@ struct SymptomPayload: Encodable {
     let latitude:          Double
     let longitude:         Double
     let humidity_pct:      Int
+    let pm25:              Double
+    let pm10:              Double
     let congestion:        Int
     let headaches:         Int
     let fatigue:           Int
