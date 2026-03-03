@@ -8,6 +8,9 @@ enum Constants {
     static let userPoolClientId = "53jsiuug0t7dag1jmn7lepkkb7"
     static let userPoolId       = "us-west-1_VOYSwxqpm"
 
+    // MARK: - PurpleAir
+    static let purpleAirApiKey = "12217058-1748-11F1-B596-4201AC1DC123"
+
     // MARK: - Notification schedule (hour, minute) in local time
     static let notificationTimes: [(hour: Int, minute: Int)] = [
         (8,  0),
